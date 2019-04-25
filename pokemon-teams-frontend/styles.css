@@ -4,7 +4,7 @@ body {
 }
 
 header {
-  background-color: #4caf50;
+  background-color: #02b8a8;
   margin: 0 auto;
   height: 50px;
 }
@@ -48,13 +48,13 @@ li {
 button {
   font-size: .65em;
   color: #fff;
-  background-color: green;
+  background-color: purple;
   border-radius: 10px;
 }
 
 button.release {
   float: right;
-  background-color: #E1332D;
+  background-color: rgb(167, 9, 4);
 }
 
 @media only screen and (min-width: 500px) {

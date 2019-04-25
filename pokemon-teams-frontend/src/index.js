@@ -40,8 +40,11 @@ function handleTrainer(trainer) {
     butt.innerText = 'Add Pokemon'
     butt.dataset.id = trainer.id
 
+    let ul = document.createElement('ul')
+    ul.dataset.id = trainer.id 
     div.appendChild(p)
     div.appendChild(butt)
+    div.appendChild(ul)
     main.appendChild(div)
 
     handlePokemons(trainer.pokemons)
@@ -52,25 +55,23 @@ function handlePokemons(team){
 }
 
 function buildPokemon(pokemon) {
-    let span = document.createElement('span')
-    span.dataset.id = pokemon.id
-    span.className = 'Pokemon'
-    
-    let p = document.createElement('p')
-    p.innerText = `${pokemon.nickname} (${pokemon.species})`
+    let li = document.createElement('li')
+    li.dataset.id = pokemon.id
+    li.className = 'Pokemon'
+    li.innerText = `${pokemon.nickname} (${pokemon.species})`
 
     let delButt = document.createElement('button')
+    delButt.className = "release"
     delButt.dataset.id = pokemon.id
     delButt.innerText = 'Release'
     delButt.addEventListener('click', releasePokemon)
 
-    p.appendChild(delButt)
-    span.appendChild(p)
+    li.appendChild(delButt)
 
-    let div = document.querySelectorAll('div')
+    let ul = document.querySelectorAll('ul')
     
-    div.forEach(tab => {if (tab.dataset.id == pokemon.trainer_id)
-                            tab.appendChild(span)})
+    ul.forEach(tab => {if (tab.dataset.id == pokemon.trainer_id)
+                            tab.appendChild(li)})
 }
 
 function addPokemon(e) {
@@ -101,7 +102,7 @@ function releasePokemon(e) {
     fetch(`${POKEMONS_URL}/${e.target.dataset.id}`, {
         method: 'DELETE'
     })
-    e.target.parentElement.parentElement.remove()
+    e.target.parentElement.remove()
 }
 
 fetchTrainers()
