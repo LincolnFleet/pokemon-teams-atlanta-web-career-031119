@@ -35,26 +35,36 @@ function handleTrainer(trainer) {
     let p = document.createElement('p')
     p.innerText = trainer.name
 
+    let butt = document.createElement('button')
+    butt.addEventListener('click', addPokemon)
+    butt.innerText = 'Add Pokemon'
+    butt.dataset.id = trainer.id
+
     div.appendChild(p)
+    div.appendChild(butt)
     main.appendChild(div)
 
     handlePokemons(trainer.pokemons)
 }
 
 function handlePokemons(team){
-    console.log(team)
     team.forEach(pokemon => buildPokemon(pokemon))
 }
 
 function buildPokemon(pokemon) {
-    console.log(pokemon.trainer_id)
-
     let span = document.createElement('span')
     span.dataset.id = pokemon.id
+    span.className = 'Pokemon'
     
     let p = document.createElement('p')
     p.innerText = `${pokemon.nickname} (${pokemon.species})`
 
+    let delButt = document.createElement('button')
+    delButt.dataset.id = pokemon.id
+    delButt.innerText = 'Release'
+    delButt.addEventListener('click', releasePokemon)
+
+    p.appendChild(delButt)
     span.appendChild(p)
 
     let div = document.querySelectorAll('div')
@@ -62,4 +72,36 @@ function buildPokemon(pokemon) {
     div.forEach(tab => {if (tab.dataset.id == pokemon.trainer_id)
                             tab.appendChild(span)})
 }
+
+function addPokemon(e) {
+    fetch(POKEMONS_URL, {
+        method: 'POST',
+        headers:    {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            pokemon:    {trainer_id: e.target.dataset.id,
+                        species: null,
+                        nickname: null
+                        }
+            })
+    })
+    let div = e.target.parentElement
+    div.querySelectorAll('.Pokemon').forEach(span => span.remove())
+    fetch(TRAINERS_URL)
+    .catch(error=>console.log('EVERYTHING IS ON FIRE!!!!!'))
+    .then(resp => resp.json())
+    .then(trainers => trainers.filter(trainer=>trainer.id == e.target.dataset.id))
+    .then(trainer => trainer[0].pokemons)
+    .then(team => handlePokemons(team))
+    
+}
+
+function releasePokemon(e) {
+    fetch(`${POKEMONS_URL}/${e.target.dataset.id}`, {
+        method: 'DELETE'
+    })
+    e.target.parentElement.parentElement.remove()
+}
+
 fetchTrainers()
